@@ -5,12 +5,13 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-
 var authRouter = require('./routes/auth');
 var booksRouter = require('./routes/books');
 
 var passport = require('passport');
 var User = require('./models/user')
+
+var refreshToken = require('./lib/refreshToken')
 
 require("./initializers/db").init()
 require("./initializers/auth").init()
@@ -30,7 +31,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(passport.initialize());
 
 app.use('/auth', authRouter);
-app.use('/books', passport.authenticate('jwt', {session: false}), booksRouter);
+app.use('/books', passport.authenticate('jwt', {session: false}), refreshToken, booksRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
