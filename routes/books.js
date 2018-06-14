@@ -6,13 +6,39 @@ const on = require('await-on')
 const User = require('../models/user')
 const Book = require('../models/book')
 
+
+router.get('/', async function(req, res, next) {
+  const [err,books] = await Book.find({}).exec().handle();
+  if(err) res.status(400).json({err})
+
+  res.status(200).json({books})
+
+});
+
+//defined these before POST /:id to prevent override
+router.get('/contributed', async function(req, res, next) {
+  const [err,books] = await Book.find({contributor:req.user}).exec().handle();
+  if(err) res.status(400).json({err})
+
+  res.status(200).json({books})
+
+});
+
+router.get('/checked-out', async function(req, res, next) {
+  const [err,books] = await Book.find({checker:req.user}).exec().handle();
+  if(err) res.status(400).json({err})
+
+  res.status(200).json({books})
+
+});
+
 router.post('/', async function(req, res, next) {
   const {title, author, publisher, categories} = req.body;
 
   const book = new Book({title, author, publisher, categories, contributor:req.user});
 
   const [err,savedBook] = await on(book.save());
-  if(err) return res.status(400).json({err})
+  if(err) res.status(400).json({err})
 
   res.status(200).json({id:savedBook.id})
 
