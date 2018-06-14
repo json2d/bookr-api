@@ -8,7 +8,7 @@ const on = require('await-on')
 const User = require('../models/user')
 
 const mailer = require('../lib/mailer')
-/* GET users listing. */
+
 router.post('/signup', async function(req, res, next) {
   const {username, password} = req.body;
   const user = new User({username});
@@ -37,8 +37,6 @@ router.post('/signup', async function(req, res, next) {
 
 });
 
-
-/* GET users listing. */
 router.post('/login', async function(req, res, next) {
   const {username, password} = req.body;
 
