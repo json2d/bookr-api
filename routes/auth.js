@@ -23,7 +23,9 @@ router.post('/signup', async function(req, res, next) {
     const [err] = await on(user.save());
     if(err) return res.status(400).json({user: err.message})
   }
-  const token = jwt.sign({id:user._id}, process.env.JWT_SECRET);
+
+  const expiresIn = Number(process.env.JWT_EXPIRE_IN_SECS)
+  const token = jwt.sign({id:user._id}, process.env.JWT_SECRET, {expiresIn});
 
   res.status(200).json({token})
 
@@ -46,7 +48,8 @@ router.post('/login', async function(req, res, next) {
   const [authErr] = await user.authenticate(password).handle()
   if(authErr) return res.status(400).json({user: authErr})
 
-  const token = jwt.sign({id:user._id}, process.env.JWT_SECRET);
+  const expiresIn = Number(process.env.JWT_EXPIRE_IN_SECS)
+  const token = jwt.sign({id:user._id}, process.env.JWT_SECRET, {expiresIn});
 
   res.status(200).json({token})
 
