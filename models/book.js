@@ -6,7 +6,7 @@ const Schema = mongoose.Schema,
     author: { type: String, required: true },
     title: { type: String, required: true },
     publisher: { type: String, required: true },
-    categories: [{ type: String, unique: true }], //no duplicates
+    categories: [{ type: String }], //TODO: no duplicates
     contributor: { type: ObjectId, ref: 'User', required: true },
 
     isCheckedOut: {type: Boolean, default: false, required: true },
