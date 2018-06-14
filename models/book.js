@@ -7,7 +7,11 @@ const Schema = mongoose.Schema,
     title: { type: String, required: true },
     publisher: { type: String, required: true },
     categories: [{ type: String, unique: true }], //no duplicates
-    contributor: { type: ObjectId, ref: 'User', required: true }
+    contributor: { type: ObjectId, ref: 'User', required: true },
+
+    isCheckedOut: {type: Boolean, default: false, required: true },
+    checker: {type: ObjectId, ref:'User'} //references another schema
+
   });
   BookSchema.index({ title: 1, author: 1, publisher: 1 }, { unique: true });
 

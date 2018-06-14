@@ -6,7 +6,6 @@ const on = require('await-on')
 const User = require('../models/user')
 const Book = require('../models/book')
 
-/* GET users listing. */
 router.post('/', async function(req, res, next) {
   const {title, author, publisher, categories} = req.body;
 
@@ -20,19 +19,15 @@ router.post('/', async function(req, res, next) {
 });
 
 
-/* GET users listing. */
 router.get('/:id', async function(req, res, next) {
   const [err,book] = await Book.findById(req.params.id).lean().exec().handle()
   if(err) return res.status(400).json({err})
   if(!book) return res.status(400).json({err:"book not found"})
 
-  //console.log(req.params.id,book)
-
   res.status(200).json(book)
 
 });
 
-/* GET users listing. */
 router.put('/:id', async function(req, res, next) {
   const [findErr,book] = await Book.findById(req.params.id).exec().handle()
   if(findErr) return res.status(400).json({err:findErr})
@@ -54,12 +49,35 @@ router.put('/:id', async function(req, res, next) {
 
 });
 
-/* GET users listing. */
 router.delete('/:id', async function(req, res, next) {
   const [err,book] = await Book.findOneAndDelete({_id:req.params.id, contributor:req.user._id}).exec().handle()
   if(err) return res.status(400).json({err})
   if(!book) return res.status(400).json({err:"book not found"})
 
+  res.status(200).send(book)
+
+});
+
+router.post('/checkout/:id', async function(req, res, next) {
+  const query = {_id:req.params.id, isCheckedOut:false}
+  const changes = {checker:req.user, isCheckedOut:true}
+
+  const [err,book] = await Book.findOneAndUpdate(query,changes).exec().handle()
+
+  if(err) return res.status(400).json({err})
+  if(!book) return res.status(400).json({err:"book not found"})
+
+  res.status(200).send(book)
+
+});
+
+router.post('/return/:id', async function(req, res, next) {
+  const query = {_id:req.params.id, isCheckedOut:true, checker:req.user}
+  const changes = {isCheckedOut:false}
+
+  const [err,book] = await Book.findOneAndUpdate(query,changes).exec().handle()
+  if(err) return res.status(400).json({err})
+  if(!book) return res.status(400).json({err:"book not found"})
   res.status(200).send(book)
 
 });
