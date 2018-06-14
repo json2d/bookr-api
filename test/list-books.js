@@ -5,7 +5,7 @@ const app = require('../app');
 const User = require('../models/user')
 const Book = require('../models/book')
 
-const {hasWellformedToken, generateBooks} = require('./helpers')
+const {hasWellformedToken, generateBooks, noBooks} = require('./helpers')
 
 describe('list books by different scopes', function() {
 
@@ -56,7 +56,7 @@ describe('list books by different scopes', function() {
         .get('/books')
         .set('Authorization',`Bearer ${users.jason.token}`)
         .expect(200)
-        .expect({books:[]})
+        .expect(noBooks)
         .end(done)
     });
 
@@ -65,7 +65,7 @@ describe('list books by different scopes', function() {
         .get('/books/contributed')
         .set('Authorization',`Bearer ${users.jason.token}`)
         .expect(200)
-        .expect({books:[]})
+        .expect(noBooks)
         .end(done)
     });
 
@@ -74,7 +74,7 @@ describe('list books by different scopes', function() {
         .get('/books/checked-out')
         .set('Authorization',`Bearer ${users.jason.token}`)
         .expect(200)
-        .expect({books:[]})
+        .expect(noBooks)
         .end(done)
     });
 
@@ -83,7 +83,7 @@ describe('list books by different scopes', function() {
         .get(`/books/by-category/${mainCategory}`)
         .set('Authorization',`Bearer ${users.jason.token}`)
         .expect(200)
-        .expect({books:[]})
+        .expect(noBooks)
         .end(done)
     });
 

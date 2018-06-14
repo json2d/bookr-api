@@ -14,4 +14,10 @@ const generateBooks = (n, category) => {
     // isbn:12312
   }))
 }
-module.exports = {hasWellformedToken, generateBooks}
+
+const noBooks = res => {
+  const books = res.body.books
+  if(!books) throw new Error("missing list of books")
+  if(!books.length==0) throw new Error("list of books is not empty")
+}
+module.exports = {hasWellformedToken, generateBooks, noBooks}
