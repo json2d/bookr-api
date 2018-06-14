@@ -15,8 +15,10 @@ describe('list books by different scopes', function() {
     })
   })
 
+  let mainCategory = "fiction"
+
   const users = {
-    jason: {username:"jason@bookr.cc", password:"password", books: generateBooks(3,"fiction")},
+    jason: {username:"jason@bookr.cc", password:"password", books: generateBooks(3, mainCategory)},
     jackson: {username:"jackson@bookr.cc", password:"P4ssword", books: generateBooks(3,"non-fiction")},
   }
 
@@ -75,6 +77,16 @@ describe('list books by different scopes', function() {
         .expect({books:[]})
         .end(done)
     });
+
+    it('responds with an empty list of books by category', function(done) {
+      request(app)
+        .get(`/books/by-category/${mainCategory}`)
+        .set('Authorization',`Bearer ${users.jason.token}`)
+        .expect(200)
+        .expect({books:[]})
+        .end(done)
+    });
+
   })
 
   describe('contribute books for both users', function() {
@@ -161,6 +173,22 @@ describe('list books by different scopes', function() {
         .end(done)
     });
   })
+
+  describe('fetch all books by category', function() {
+    it('responds with a list of books with the category', function(done) {
+      request(app)
+        .get(`/books/by-category/${mainCategory}`)
+        .set('Authorization',`Bearer ${users.jackson.token}`)
+        .expect(200)
+        .expect(res => {
+          const expected = users.jason.books.length
+          const got = res.body.books.length
+          if(got !== expected) throw new Error(`incorrect number of books, expected ${expected} by got ${got}`)
+        })
+        .end(done)
+    });
+  })
+
 
 
 });
