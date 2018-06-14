@@ -32,6 +32,14 @@ router.get('/checked-out', async function(req, res, next) {
 
 });
 
+router.get('/by-category/:category', async function(req, res, next) {
+  const [err,books] = await Book.find({categories:req.params.category}).exec().handle();
+  if(err) res.status(400).json({err})
+
+  res.status(200).json({books})
+
+});
+
 router.post('/', async function(req, res, next) {
   const {title, author, publisher, categories} = req.body;
 
