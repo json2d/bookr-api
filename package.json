@@ -22,6 +22,7 @@
     "pug": "2.0.0-beta11"
   },
   "devDependencies": {
+    "faker": "^4.1.0",
     "mocha": "^5.1.1",
     "supertest": "^3.0.0"
   }
