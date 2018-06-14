@@ -3,10 +3,7 @@ const app = require('../app');
 
 const User = require('../models/user')
 
-const JWS_REGEX = /^[a-zA-Z0-9\-_]+?\.[a-zA-Z0-9\-_]+?\.([a-zA-Z0-9\-_]+)?$/;
-const hasWellformedToken = res => {
-  if(!res.body.token.match(JWS_REGEX)) throw new Error("malformed jwt token")
-}
+const {hasWellformedToken} = require('./helpers')
 
 describe('POST /auth/signup', function() {
 
