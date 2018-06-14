@@ -7,6 +7,7 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var authRouter = require('./routes/auth');
 var booksRouter = require('./routes/books');
+var categoriesRouter = require('./routes/categories');
 
 var passport = require('passport');
 var User = require('./models/user')
@@ -32,6 +33,7 @@ app.use(passport.initialize());
 
 app.use('/auth', authRouter);
 app.use('/books', passport.authenticate('jwt', {session: false}), refreshToken, booksRouter);
+app.use('/categories', passport.authenticate('jwt', {session: false}), refreshToken, categoriesRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
