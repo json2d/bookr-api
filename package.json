@@ -22,8 +22,10 @@
     "pug": "2.0.0-beta11"
   },
   "devDependencies": {
+    "aws-sdk": "^2.257.1",
     "faker": "^4.1.0",
     "mocha": "^5.1.1",
+    "nodemailer": "^4.6.6",
     "supertest": "^3.0.0"
   }
 }

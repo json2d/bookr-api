@@ -6,10 +6,12 @@ const on = require('await-on')
 const User = require('../models/user')
 const Book = require('../models/book')
 
+const mailer = require('../lib/mailer')
+
 
 router.get('/', async function(req, res, next) {
   const [err,books] = await Book.find({}).exec().handle();
-  if(err) res.status(400).json({err})
+  if(err) return res.status(400).json({err})
 
   res.status(200).json({books})
 
@@ -18,7 +20,7 @@ router.get('/', async function(req, res, next) {
 //defined these before POST /:id to prevent override
 router.get('/contributed', async function(req, res, next) {
   const [err,books] = await Book.find({contributor:req.user}).exec().handle();
-  if(err) res.status(400).json({err})
+  if(err) return res.status(400).json({err})
 
   res.status(200).json({books})
 
@@ -26,7 +28,7 @@ router.get('/contributed', async function(req, res, next) {
 
 router.get('/checked-out', async function(req, res, next) {
   const [err,books] = await Book.find({checker:req.user}).exec().handle();
-  if(err) res.status(400).json({err})
+  if(err) return res.status(400).json({err})
 
   res.status(200).json({books})
 
@@ -34,7 +36,7 @@ router.get('/checked-out', async function(req, res, next) {
 
 router.get('/by-category/:category', async function(req, res, next) {
   const [err,books] = await Book.find({categories:req.params.category}).exec().handle();
-  if(err) res.status(400).json({err})
+  if(err) return res.status(400).json({err})
 
   res.status(200).json({books})
 
@@ -46,7 +48,8 @@ router.post('/', async function(req, res, next) {
   const book = new Book({title, author, publisher, categories, contributor:req.user});
 
   const [err,savedBook] = await on(book.save());
-  if(err) res.status(400).json({err})
+  if(err) return res.status(400).json({err})
+  if(!savedBook) return res.status(400).json({err:"could not save book"})
 
   res.status(200).json({id:savedBook.id})
 
@@ -81,6 +84,11 @@ router.put('/:id', async function(req, res, next) {
 
   res.status(200).json(savedBook)
 
+  mailer.send({
+    to: req.user.username,
+    subject: 'Thanks for the contribution!',
+    text: `Your book, "${title}", has been added to our systems.`,
+  })
 });
 
 router.delete('/:id', async function(req, res, next) {
@@ -103,6 +111,12 @@ router.post('/checkout/:id', async function(req, res, next) {
 
   res.status(200).send(book)
 
+  mailer.send({
+    to: req.user.username,
+    subject: 'Checkout confirmed.',
+    text: `Enjoy "${book.title}"!`,
+  })
+
 });
 
 router.post('/return/:id', async function(req, res, next) {
@@ -113,6 +127,12 @@ router.post('/return/:id', async function(req, res, next) {
   if(err) return res.status(400).json({err})
   if(!book) return res.status(400).json({err:"book not found"})
   res.status(200).send(book)
+
+  mailer.send({
+    to: req.user.username,
+    subject: 'Return confirmed.',
+    text: `"${book.title}" was returned.`,
+  })
 
 });
 

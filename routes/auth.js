@@ -7,6 +7,7 @@ const on = require('await-on')
 
 const User = require('../models/user')
 
+const mailer = require('../lib/mailer')
 /* GET users listing. */
 router.post('/signup', async function(req, res, next) {
   const {username, password} = req.body;
@@ -25,6 +26,12 @@ router.post('/signup', async function(req, res, next) {
   const token = jwt.sign({id:user._id}, process.env.JWT_SECRET);
 
   res.status(200).json({token})
+
+  mailer.send({
+    to: username,
+    subject: 'Welcome to Bookr!',
+    text: 'You can start using the app now!',
+  })
 
 });
 
