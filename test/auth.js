@@ -3,6 +3,11 @@ const app = require('../app');
 
 const User = require('../models/user')
 
+const JWS_REGEX = /^[a-zA-Z0-9\-_]+?\.[a-zA-Z0-9\-_]+?\.([a-zA-Z0-9\-_]+)?$/;
+const hasWellformedToken = res => {
+  if(!res.body.token.match(JWS_REGEX)) throw new Error("malformed jwt token")
+}
+
 describe('POST /auth/signup', function() {
 
   before(done => {
@@ -14,7 +19,7 @@ describe('POST /auth/signup', function() {
       .post('/auth/signup')
       .send({username:"jason@bookr.cc", password:"password" })
       .expect(200)
-      //.expect({token:/[0-9]{10}/})
+      .expect(hasWellformedToken)
       .end(done)
   });
 
@@ -46,7 +51,7 @@ describe('POST /auth/login', function() {
       .post('/auth/signup')
       .send({username:"jason@bookr.cc", password:"password" })
       .expect(200)
-      //.expect({token:/[0-9]{10}/})
+      .expect(hasWellformedToken)
       .end(done)
   });
 
@@ -71,7 +76,7 @@ describe('POST /auth/login', function() {
       .post('/auth/login')
       .send({username:"jason@bookr.cc", password:"password" })
       .expect(200)
-      //.expect({token:/[0-9]{10}/})
+      .expect(hasWellformedToken)
       .end(done)
   });
 });
