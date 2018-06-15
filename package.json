@@ -5,7 +5,8 @@
   "scripts": {
     "start": "node ./bin/www",
     "test": "cross-env JWT_EXPIRE_IN_SECS=4 mocha --exit",
-    "test:token-expiry": "cross-env JWT_EXPIRE_IN_SECS=4 mocha --exit test/token-expiry.js"
+    "test:token-expiry": "cross-env JWT_EXPIRE_IN_SECS=4 mocha --exit test/token-expiry.js",
+    "doc": "apidoc -i routes/ -o docs/"
   },
   "dependencies": {
     "await-on": "^0.1.3",
@@ -23,6 +24,7 @@
     "passport-local-mongoose": "^5.0.0"
   },
   "devDependencies": {
+    "apidoc": "^0.17.6",
     "aws-sdk": "^2.257.1",
     "cross-env": "^5.2.0",
     "faker": "^4.1.0",

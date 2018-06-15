@@ -5,6 +5,14 @@ const on = require('await-on')
 
 const Book = require('../models/book')
 
+/**
+ * @api {get} /categories List All Categories
+ * @apiName List All
+ * @apiGroup Categories
+ *
+ * @apiSuccess {Array} categories List of all categories.
+ * @apiSuccess {String} token Access token for User.
+ */
 router.get('/', async function(req, res, next) {
 
   const [err,books] = await Book.find({}).lean().exec().handle();

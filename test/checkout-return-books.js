@@ -80,7 +80,8 @@ describe('checkout and return books', function() {
         .expect(200)
         .end((err,res) => {
           if(err) throw err;
-          bookId = res.body.id
+          console.log(res.body.book)
+          bookId = res.body.book._id
           done()
         })
     });

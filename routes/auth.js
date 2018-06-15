@@ -2,13 +2,18 @@ const express = require('express');
 const router = express.Router();
 
 const jwt = require('jsonwebtoken');
-
 const on = require('await-on')
 
 const User = require('../models/user')
-
 const mailer = require('../lib/mailer')
 
+/**
+ * @api {post} /auth/signup Register New User
+ * @apiName Signup
+ * @apiGroup Authentication
+ *
+ * @apiSuccess {String} token Access token for User.
+ */
 router.post('/signup', async function(req, res, next) {
   const {username, password} = req.body;
   const user = new User({username});
@@ -37,6 +42,13 @@ router.post('/signup', async function(req, res, next) {
 
 });
 
+/**
+ * @api {post} /auth/login Login Existing User
+ * @apiName Login
+ * @apiGroup Authentication
+ *
+ * @apiSuccess {String} token Access token for User.
+ */
 router.post('/login', async function(req, res, next) {
   const {username, password} = req.body;
 
